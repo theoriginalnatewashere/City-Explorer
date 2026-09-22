@@ -72,7 +72,7 @@ export function createCompare(radarEl, tableEl, summEl) {
     return [cx + R * frac * Math.cos(a), cy + R * frac * Math.sin(a)];
   };
 
-  function renderStatic(R, cx, cy) {
+  function renderStatic(R, cx, cy, narrow = false) {
     // rings + spokes + labels (static per size)
     gRings.replaceChildren();
     gAxes.replaceChildren();
@@ -88,15 +88,22 @@ export function createCompare(radarEl, tableEl, summEl) {
       d3.select(gAxes).append("line")
         .attr("x1", cx).attr("y1", cy).attr("x2", x).attr("y2", y)
         .attr("class", "radar-spoke");
-      const [lx, ly] = pt(i, 1, R + 14, cx, cy);
+      const [lx, ly] = pt(i, 1, R + (narrow ? 10 : 14), cx, cy);
       const def = state.registry.get(DIMS[i]);
       const anchor = Math.abs(Math.cos(((-90 + i * 60) * Math.PI) / 180)) < 0.35 ? "middle" : (Math.cos(((-90 + i * 60) * Math.PI) / 180) > 0 ? "start" : "end");
       const t = d3.select(gLabels).append("text")
         .attr("class", "radar-label")
         .attr("x", lx).attr("y", ly)
         .attr("text-anchor", anchor);
-      t.append("tspan").attr("x", lx).attr("dy", Math.sin(((-90 + i * 60) * Math.PI) / 180) < -0.3 ? "-0.3em" : "0.3em").text(SHORT[DIMS[i]]);
-      t.append("tspan").attr("x", lx).attr("dy", "1.15em").attr("class", "radar-geo").text(geoTag(def));
+      // narrow widths: wrap multi-word axis names onto a second line so the
+      // longest labels stay inside the viewBox; desktop keeps single lines
+      const words = SHORT[DIMS[i]].split(" ");
+      const nameLines = narrow && words.length > 1 ? [words[0], words.slice(1).join(" ")] : [SHORT[DIMS[i]]];
+      const dy0 = Math.sin(((-90 + i * 60) * Math.PI) / 180) < -0.3 ? "-0.3em" : "0.3em";
+      nameLines.forEach((line, li) => {
+        t.append("tspan").attr("x", lx).attr("dy", li === 0 ? dy0 : "1.05em").text(line);
+      });
+      t.append("tspan").attr("x", lx).attr("dy", "1.05em").attr("class", "radar-geo").text(geoTag(def));
     }
     // ring value labels along the top spoke
     for (const lv of [50, 100]) {
@@ -112,9 +119,12 @@ export function createCompare(radarEl, tableEl, summEl) {
     const r = radarEl.getBoundingClientRect();
     W = Math.max(280, r.width); H = Math.max(280, r.height);
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
-    const R = Math.min(W, H) / 2 - 52;
+    // phone widths: bigger label reserve + tighter offset so wrapped axis
+    // labels stay inside the viewBox (desktop/tablet keep the 52px reserve)
+    const narrow = W < 520;
+    const R = Math.min(W, H) / 2 - (narrow ? 76 : 52);
     const cx = W / 2, cy = H / 2 + 4;
-    renderStatic(R, cx, cy);
+    renderStatic(R, cx, cy, narrow);
 
     gPolys.replaceChildren();
     gMarks.replaceChildren();

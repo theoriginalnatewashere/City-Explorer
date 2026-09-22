@@ -197,19 +197,11 @@ select.field:focus-visible, .field:focus-visible { outline: 2px solid var(--cora
 .howto .note { margin: 10px 0 0; }
 .footer-line { margin: 8px 0 0; font-size: 11px; color: var(--ink-soft); }
 
-/* ---------- responsive ---------- */
-@media (max-width: 1100px) {
-  .viz-grid { grid-template-columns: 1fr; }
-  .viz-body { height: 480px; }
-  .explorer-controls { margin-left: 0; }
-  .compare-grid { grid-template-columns: 1fr; }
-  .radar-body { height: 380px; }
-}
-@media (max-width: 640px) {
-  .explorer-controls { flex: 1 1 100%; }
-  .explorer-controls label { flex: 1 1 100%; min-width: 0; }
-  .field { width: 100%; min-width: 0; }
-}
+/* ---------- responsive ----------
+   NOTE: both breakpoint blocks live at the END of this file, AFTER every
+   base rule (including the comparison section below) so they win the
+   cascade — previously the comparison base rules sat after these blocks
+   and defeated the ≤1100 stacking for .compare-grid/.radar-body. */
 
 /* ============================================================
    THREE-CITY COMPARISON SECTION (radar · dimension scores · summaries)
@@ -219,6 +211,10 @@ select.field:focus-visible, .field:focus-visible { outline: 2px solid var(--cora
   gap: 1px; background: var(--rule); border-bottom: 1px solid var(--rule);
 }
 .compare-grid .viz-panel { min-height: 430px; }
+
+/* AboutMe band mounts between the comparison grid and the footer; the
+   comparison grid already draws the separating hairline */
+.compare-grid + .about { border-top: 0; }
 
 /* radar */
 .radar-body { position: relative; height: 330px; min-height: 300px; }
@@ -295,3 +291,48 @@ select.field:focus-visible, .field:focus-visible { outline: 2px solid var(--cora
 .tag-coral { border-color: var(--coral-soft); color: var(--coral); }
 .tag-neutral { color: var(--ink-soft); }
 .compare-empty { color: var(--ink-soft); font-size: 12.5px; padding: 28px 4px; }
+
+/* ---------- phone: comparison section (radar · table · summaries) ----------
+   Desktop and tablet are untouched; everything here is inside ≤640px. */
+@media (max-width: 640px) {
+  .compare-grid .viz-panel { min-height: 0; padding: 12px 12px 10px; }
+
+  /* radar: smaller type; JS word-wraps multi-word axis names so labels stay
+     inside the viewBox at phone widths (sizing branch in compare.js) */
+  .radar-label { font-size: 9px; }
+  .radar-geo { font-size: 7px; letter-spacing: 0.04em; }
+  .radar-ringlabel { font-size: 8px; }
+
+  /* table: compact columns; dimension labels pinned while city columns scroll */
+  .cmp-table { font-size: 11.5px; }
+  .cmp-table th, .cmp-table td { padding: 7px 5px; }
+  .cmp-table thead th.city-h { font-size: 11px; }
+  .score { font-size: 12px; }
+  .cell-year { font-size: 8px; }
+  .cmp-table thead th.dim-h, .cmp-table td.dim-name {
+    position: sticky; left: 0; z-index: 2;
+    background: var(--paper);
+    box-shadow: 1px 0 0 var(--rule);
+  }
+
+  /* summaries: tighter cards */
+  .sum-card { padding: 10px; }
+  .sum-card + .sum-card { margin-top: 8px; }
+  .sum-name { font-size: 12.5px; }
+  .sum-text { font-size: 11.5px; }
+  .tag { font-size: 9px; padding: 2px 6px; }
+}
+
+/* ---------- responsive breakpoints (must stay after ALL base rules) ---------- */
+@media (max-width: 1100px) {
+  .viz-grid { grid-template-columns: 1fr; }
+  .viz-body { height: 480px; }
+  .explorer-controls { margin-left: 0; }
+  .compare-grid { grid-template-columns: 1fr; }
+  .radar-body { height: 380px; }
+}
+@media (max-width: 640px) {
+  .explorer-controls { flex: 1 1 100%; }
+  .explorer-controls label { flex: 1 1 100%; min-width: 0; }
+  .field { width: 100%; min-width: 0; }
+}

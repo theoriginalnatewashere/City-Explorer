@@ -10,7 +10,7 @@ and a European city map. Data is rendered as-is; nothing is cleaned, rescored, o
 cd city-explorer
 python -m http.server 8763     # ES modules + fetch require HTTP
 # open http://localhost:8763/
-node verify.mjs                # data-integrity + structure self-check (63 checks)
+node verify.mjs                # data-integrity + structure self-check (109 checks)
 ```
 
 ## Visualization library
@@ -82,6 +82,18 @@ removed, or replaced; works gracefully with 1–3 cities and shows hints when em
   plus tags (Strong ≥67 / Weaker ≤33 / "N of 6 dims available"). No personality claims
   beyond the stated bands, which are labelled as a display convention in the card footer.
 
+## About Me (shared AboutMe band)
+
+The closing author band reuses the workspace's shared AboutMe component verbatim:
+`js/components/about.js` (renderer) + `js/data/author-profile.js` (single-source content),
+styled by the `.about*` rules already in `styles/components.css`. The portrait is a
+byte-identical copy of the canonical `templates/research-dashboard/assets/author/nethan-profile.png`
+in `assets/author/`, referenced site-root-absolute (`/assets/author/nethan-profile.png`)
+per the workspace convention — `verify.mjs` hash-guards the copy against canonical drift
+and asserts the rendered markup. On phone widths the comparison section above it compacts
+(radar labels wrap, table gets a pinned dimension column + horizontal scroll, panels drop
+their fixed min-height); desktop and tablet layouts are unchanged.
+
 ## Data limitations encountered (all preserved, none repaired)
 
 1. **Per-indicator reference years differ** (PM2.5 up to 2025, green area 2021, public
@@ -107,9 +119,10 @@ index.html              shell (fonts, design-system CSS, vendored d3/topojson, m
 styles/                 tokens.css + components.css (template) · explore.css (view)
 js/                     main.js (assembler) · state.js · registry.js (metadata join)
                         scatter.js · map.js · compare.js (radar/table/summaries)
+                        components/about.js + data/author-profile.js (shared AboutMe)
                         tooltip.js · lib/{csv,util}.js
 data/                   frozen V1 copies + coordinates lookup + PROVENANCE.md
-assets/vendor,assets/geo,assets/raw   d3, topojson-client, Natural Earth 50m, GeoNames
+assets/vendor,assets/geo,assets/raw,assets/author   d3, topojson-client, Natural Earth 50m, GeoNames, portrait
 analysis/               build_city_coordinates.py + coordinate_match_report.md
-verify.mjs              63-check self-test (hashes, shapes, joins, syntax)
+verify.mjs              109-check self-test (hashes, shapes, joins, syntax, AboutMe)
 ```

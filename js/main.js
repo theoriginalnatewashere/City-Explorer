@@ -11,6 +11,8 @@ import { buildRegistry, GROUPS, POPULATION } from "./registry.js";
 import { createScatter } from "./scatter.js";
 import { createMap } from "./map.js";
 import { createCompare } from "./compare.js";
+import { renderAboutMe } from "./components/about.js";
+import { authorProfile } from "./data/author-profile.js";
 
 const BASE = document.documentElement.dataset.base || "";
 
@@ -108,6 +110,7 @@ document.getElementById("app").innerHTML = `
       <div class="summ-body" id="summ-body"></div>
     </div>
   </section>
+  ${renderAboutMe(authorProfile)}
   <footer class="explorer-footer">
     <details class="howto">
       <summary>How to read this data</summary>

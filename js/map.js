@@ -71,6 +71,7 @@ export function createMap(container, world) {
   }
 
   function update(sel, rScale) {
+    size(); // refit projection + viewBox to the current container before re-projecting dots (same pattern as scatter)
     const dots = d3.select(gDots).selectAll("circle.dot").data(sel.mappable, (d) => d.id);
     dots.join(
       (enter) => enter.append("circle").attr("class", "dot").attr("r", 0)

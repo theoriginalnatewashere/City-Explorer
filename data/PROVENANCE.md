@@ -9,8 +9,18 @@ Copied **byte-identical** (sha256-verified below) from the frozen pipeline at
 
 | File | Source | sha256 |
 |---|---|---|
+| `data/city_profile_scores.csv` | data/processed/v1/city_profile_scores.csv | `a18e01ed815494da69869c33b568b7622deade5eff7214b1c55c7f0fb2125506` |
 | `data/city_explorer.csv` | data/processed/v1/city_explorer.csv | `9878cfcd44f6b99c5652e794835f9012bfbb7022c7947646c3456bb6d0e5729a` |
+| `data/city_profiles.csv` | data/processed/v1/city_profiles.csv | `f1f2c09dabea0529c60cfbab7c94c33027b56a83c50045a5bb8d696b3f9d4cd0` |
+| `data/city_comparison_long.csv` | data/processed/v1/city_comparison_long.csv | `9db5f5cc630be7aa4b4319fd3118f4bd9e958a845afd57f2839f1d4c0eaa89fd` |
 | `data/indicator_metadata.csv` | data/processed/v1/indicator_metadata.csv | `b8d97f625d20fc77df7b20e60e27d7d5330dc4cb28a462c4f2b71cbf1e6837ed` |
+
+`city_explorer.csv` + `indicator_metadata.csv` staged 2026-09-11; `city_profile_scores.csv`,
+`city_profiles.csv`, `city_comparison_long.csv` staged 2026-09-21 from the same frozen
+source (copy-only; pre-existing files confirmed byte-identical, nothing overwritten).
+The prototype currently consumes `city_explorer.csv` + `indicator_metadata.csv` (plus
+presentation-layer `city_coordinates.csv`); the other three are staged frozen inputs for
+upcoming profile/comparison views.
 
 Rule: **no modification, cleaning, reinterpretation, normalization, or rescoring.**
 The prototype renders these files as-is; `verify.mjs` re-checks the hashes.
